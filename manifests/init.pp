@@ -1,4 +1,3 @@
-
 class php::install {
   Package {
     ensure => present
@@ -7,7 +6,7 @@ class php::install {
   package { 'php':
     name    => $php::params::package
   }
-  
+
   package { 'php-common':
     name    => $php::params::package_common
   }
@@ -30,5 +29,10 @@ class php::config {
 
 class php {
   include php::params
-  include php::install, php::config
+  anchor { 'php::begin': } ->
+  class { 'php::install': } ->
+  class { 'php::config': } ->
+  anchor { 'php::end':
+    require => Anchor['php::begin']
+  }
 }
